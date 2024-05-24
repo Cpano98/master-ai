@@ -61,4 +61,3 @@ datos['contenedores_cuantiles'] = pd.qcut(datos['variable_continua'], q=num_cont
 
 ## 7. Resumen
 La discretización y la agrupación son técnicas esenciales para transformar datos continuos en datos categóricos u ordinales, lo que permite un análisis e interpretación más fáciles. La biblioteca Pandas de Python proporciona funciones convenientes como `pd.cut()` y `pd.qcut()` para implementar estas técnicas de manera eficiente. Al discretizar datos, puede simplificar conjuntos de datos complejos y obtener ideas valiosas para diversas tareas analíticas.
-```
