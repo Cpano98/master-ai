@@ -1,0 +1,26 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/bitcraze/crazyflie/protos/Crazyflie.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.3348897248355035 0.7391702558489376 0.5843596538672197 1.3190197314419136
+  position -3.153260093016773 -3.8743105817967307 8.77794463356929
+}
+Crazyflie {
+  hidden linearVelocity_0 -1.180272456025269e-08 -1.1281037158438294e-07 -3.361690022787556e-08
+  hidden angularVelocity_0 -1.0073333186110826e-06 5.964557599192765e-07 2.0119497912715015e-07
+  translation 0.16715826649765025 0.7279147972198609 0.4399999864386578
+  rotation 3.92951076227756e-08 6.029783534843629e-08 0.9999999999999974 1.0574732661630697
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 3 3
+}
