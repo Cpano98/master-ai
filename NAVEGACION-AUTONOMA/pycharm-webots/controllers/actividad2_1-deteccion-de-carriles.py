@@ -77,7 +77,7 @@ def display_image(display, image):
 manual_steering = 0
 steering_angle = 0
 angle = 0.0
-speed = 1
+speed = 10
 
 # set target speed
 def set_speed(kmh):
@@ -142,7 +142,6 @@ def main():
 
         # Process and display image 
         hough_image_lines, lines = show_hough_lines(image)
-        
         if lines is None:
             change_steer_angle(0.0)  # Set steering to straight when no lines detected
         else:
@@ -161,14 +160,17 @@ def main():
             print("avg_x: ", avg_x)
             print("avg_y: ", avg_y)
 
-            # If average line position is to the left of center, turn right
-            # If to the right of center, turn left
-            if avg_x > 1:  # Add threshold to avoid oscillation
+            # Image center is at x=128 (256/2)
+            # Turn based on line position relative to center
+            center_x = 128
+            threshold = 15  # Add threshold to avoid oscillation
+
+            if avg_x > center_x + threshold:  
+                change_steer_angle(-0.5)  # Turn left
+                print("Turning left to follow line")
+            elif avg_x < center_x - threshold:
                 change_steer_angle(+0.5)  # Turn right
                 print("Turning right to follow line")
-            elif avg_x < 1:
-                change_steer_angle(-0.5)  # Turn left 
-                print("Turning left to follow line")
             else:
                 change_steer_angle(0)  # Go straight
                 print("Centered on line")

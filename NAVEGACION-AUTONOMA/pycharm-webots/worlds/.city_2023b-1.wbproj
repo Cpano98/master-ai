@@ -7,5 +7,5 @@ centralWidgetVisible: 1
 orthographicViewHeight: 1
 textFiles: -1
 globalOptionalRendering: CoordinateSystem
-renderingDevicePerspectives: vehicle:camera;1;0.727803;0.749244;0.264198
-renderingDevicePerspectives: vehicle:display_image;1;1.06095;0.635681;0.0115228
+renderingDevicePerspectives: vehicle:camera;1;1.51953;0.470948;0.175309
+renderingDevicePerspectives: vehicle:display_image;1;1.53516;0.469236;0.00658453
