@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 from datetime import datetime
 import os
+import math
 
 #Getting image from camera
 def get_image(camera):
@@ -15,47 +16,76 @@ def get_image(camera):
     )
     return image
 
-#Image processing
+#Image processing functions
 def greyscale_cv2(image):
+    # Convert BGR image to grayscale
     gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return gray_img
 
 def rgb_cv2(image):
+    # Convert BGR image to RGB
     rgb_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return rgb_img
 
-# Creating Canny Filter
 def canny_cv2(grey_image):
+    # Apply Canny edge detection
     edges = cv2.Canny(grey_image, 10,120)
     return edges
 
 def gaussian_blur(image):
+    # Apply 3x3 Gaussian blur to reduce noise
     blur = cv2.GaussianBlur(image, (3, 3), 0, 0)
     return blur
 
-#Showing Hough Lines
 def show_hough_lines(img):
+    """
+    Detects and draws lane lines in an image using the Hough transform.
+    
+    Process:
+    1. Converts image to RGB and grayscale
+    2. Applies Gaussian blur to reduce noise
+    3. Detects edges using Canny algorithm
+    4. Creates a trapezoid mask to focus on road region
+    5. Uses Hough transform to detect lines in masked image
+    6. Draws detected lines in blue
+    
+    Args:
+        img: Input image to process
+        
+    Returns:
+        img_mask: The masked edge detection image
+        lines: Detected line segments from Hough transform
+    """
+    # Convert image to RGB and grayscale for processing
     rgb = rgb_cv2(img)
     gray = greyscale_cv2(img)
     blur = gaussian_blur(gray)
-
     canny = canny_cv2(blur)
     
-    # print(canny.shape) -> 128,256
-    # The vertices form a trapezoid shape scaled for 128x256 image
-    # Bottom left, top left, top right, bottom right corners
-    vertices = np.array([[50, 128], [85, 80], [171, 80], [206, 128]], np.int32)
+    # Create trapezoid mask to isolate road region
+    # Points form a trapezoid shape covering the road area
+    #vertices = np.array([[50, 128], [85, 80], [171, 80], [206, 128]], np.int32)
+    vertices = np.array([[60, 120], [100, 90], [156, 90], [196, 120]], np.int32)
     img_ro1 = np.zeros_like(gray)
     cv2.fillPoly(img_ro1, [vertices], 255)
     img_mask = cv2.bitwise_and(canny, img_ro1)
     
+    # Apply probabilistic Hough transform to detect line segments
+    # Parameters:
+    # - rho=2: Distance resolution in pixels
+    # - theta=pi/180: Angle resolution in radians 
+    # - threshold=40: Minimum number of intersections to detect a line
+    # - minLineLength=50: Minimum length of line
+    # - maxLineGap=10: Maximum gap between line segments to connect them
     lines = cv2.HoughLinesP(img_mask, 2, np.pi / 180, 40, minLineLength=50, maxLineGap=10)
     
+    # Create empty image to draw detected lines
     img_lines = np.zeros_like((img_mask.shape[0], img_mask.shape[1], 3), dtype=np.uint8)
     
+    # Draw each detected line segment in blue color
     if lines is not None:
        for line in lines:
-           x1, y1, x2, y2 = line[0]
+           x1, y1, x2, y2 = line[0]  # Extract line endpoint coordinates
            cv2.line(img_lines, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
     return img_mask, lines
@@ -77,7 +107,7 @@ def display_image(display, image):
 manual_steering = 0
 steering_angle = 0
 angle = 0.0
-speed = 10
+speed = 5
 
 # set target speed
 def set_speed(kmh):
@@ -140,41 +170,44 @@ def main():
         # Get image from camera
         image = get_image(camera)
 
-        # Process and display image 
+        # Process and display image
         hough_image_lines, lines = show_hough_lines(image)
         if lines is None:
-            change_steer_angle(0.0)  # Set steering to straight when no lines detected
+            change_steer_angle(0.0)
+            angle = 0.0  # Set default angle when no lines detected
         else:
             print("Lines detected: ", lines)
-            # Calculate average x and y coordinates of line endpoints
-            avg_x = 0
-            avg_y = 0
-            num_lines = len(lines)
+            weighted_angle_sum = 0
+            weight_sum = 0
+            image_height = image.shape[0] # Get image height to calculate weight
+
             for line in lines:
                 x1, y1, x2, y2 = line[0]
-                avg_x += (x1 + x2) / 2
-                avg_y += (y1 + y2) / 2
-            avg_x /= num_lines
-            avg_y /= num_lines
-            
-            print("avg_x: ", avg_x)
-            print("avg_y: ", avg_y)
+                line_angle = math.atan2(y2 - y1, x2 - x1)
+                angle_deg = math.degrees(line_angle)
 
-            # Image center is at x=128 (256/2)
-            # Turn based on line position relative to center
-            center_x = 128
-            threshold = 15  # Add threshold to avoid oscillation
+                if angle_deg > 90:
+                    angle_deg -= 180
+                elif angle_deg < -90:
+                    angle_deg += 180
 
-            if avg_x > center_x + threshold:  
-                change_steer_angle(-0.5)  # Turn left
-                print("Turning left to follow line")
-            elif avg_x < center_x - threshold:
-                change_steer_angle(+0.5)  # Turn right
-                print("Turning right to follow line")
+                print("Line angle: ", angle_deg)
+
+                # Example: Weight based on the average y-coordinate (closer to bottom = higher weight)
+                weight = 1.0 - ( (y1 + y2) / 2.0 ) / image_height
+                weighted_angle_sum += angle_deg * weight
+                weight_sum += weight
+
+            if weight_sum > 0:
+                avg_weighted_angle = weighted_angle_sum / weight_sum
+                steering = -avg_weighted_angle / 90
+                change_steer_angle(steering)
+                angle = steering  # Set angle based on steering calculation
+                print(f"Setting steering to {steering} based on weighted average angle")
             else:
-                change_steer_angle(0)  # Go straight
-                print("Centered on line")
-            
+                change_steer_angle(0.0)
+                angle = 0.0  # Set default angle when weight sum is 0
+
         display_image(display_img, hough_image_lines)
 
         # Read keyboard
