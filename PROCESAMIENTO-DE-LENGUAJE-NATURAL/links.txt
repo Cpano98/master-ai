@@ -6,7 +6,7 @@ https://platform.openai.com/docs/overview
 
 curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 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" \
+  -H "Authorization: Bearer " \
   -d '{
     "model": "gpt-4o-mini",
     "store": true,
