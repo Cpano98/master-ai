@@ -8,3 +8,5 @@
 *.tar.lz
 *.tar.lzo
 .env
+
+opencv/
