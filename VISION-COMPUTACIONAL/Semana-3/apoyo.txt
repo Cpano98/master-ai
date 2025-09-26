@@ -1,0 +1,9 @@
+https://learnopencv.com/image-filtering-using-convolution-in-opencv/Links to an external site.
+
+https://ai.stanford.edu/~syyeung/cvweb/tutorial1.htmlLinks to an external site.
+
+https://pyimagesearch.com/2016/07/25/convolutions-with-opencv-and-pythonLinks to an external site.
+
+https://learnopencv.com/image-filtering-using-convolution-in-opencv/Links to an external site.
+
+https://www.geeksforgeeks.org/spatial-filters-averaging-filter-and-median-filter-in-image-processing/Links to an external site.
