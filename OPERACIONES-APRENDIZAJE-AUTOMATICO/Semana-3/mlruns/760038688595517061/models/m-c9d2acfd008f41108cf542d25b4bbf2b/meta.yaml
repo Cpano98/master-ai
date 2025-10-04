@@ -1,0 +1,10 @@
+artifact_location: file:///Users/cpanoh/Library/CloudStorage/GoogleDrive-carlospano8%40gmail.com/Other%20computers/My%20MacBook%20Pro/CPHserver/Documentos%20Personales/A01066264/MASTER%20IA/master-ai/OPERACIONES-APRENDIZAJE-AUTOMATICO/Semana-3/mlruns/760038688595517061/models/m-c9d2acfd008f41108cf542d25b4bbf2b/artifacts
+creation_timestamp: 1758851044251
+experiment_id: '760038688595517061'
+last_updated_timestamp: 1758851046877
+model_id: m-c9d2acfd008f41108cf542d25b4bbf2b
+model_type: null
+name: elasticnet
+source_run_id: 17c0b19e1bea42648085b798b7507725
+status: 2
+status_message: null
