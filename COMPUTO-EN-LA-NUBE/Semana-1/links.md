@@ -1,0 +1,3 @@
+- [Google Cloud Architecture Framework](https://docs.cloud.google.com/architecture/framework)
+- [Google Cloud Products](https://cloud.google.com/products)
+- [Getting Started with Google Cloud](https://docs.cloud.google.com/docs/get-started)
