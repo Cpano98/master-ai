@@ -1,0 +1,6 @@
+.git
+.gitignore
+*.md
+deploy-local.sh
+.dockerignore
+.DS_Store
